@@ -1,0 +1,49 @@
+name: release
+
+# Tag-driven release: pushing a vX.Y.Z tag gates, publishes pi-prose to npm
+# via OIDC trusted publishing (no token, no OTP, with provenance), and cuts
+# the GitHub release. One-time setup: configure the trusted publisher for
+# pi-prose on npmjs.com (GitHub Actions, repo vieko/pi-prose, workflow
+# release.yml). See docs/releasing.md.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write # create the GitHub release
+  id-token: write # OIDC for npm trusted publishing
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # full history so release notes can diff from the previous tag
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; the runner ships older.
+      - run: npm install -g npm@latest
+      - run: npm ci
+      # The same gate as CI: a tag only ships if it is green.
+      - run: npm run check
+      # Guard: the tag must match the package version we are about to publish.
+      - name: Verify tag matches package version
+        run: |
+          pkg="$(node -p "require('./package.json').version")"
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$pkg" != "$tag" ]; then
+            echo "tag v$tag does not match pi-prose version $pkg" >&2
+            exit 1
+          fi
+      # OIDC trusted publishing: no NODE_AUTH_TOKEN, no OTP; provenance is automatic.
+      - run: npm publish
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --generate-notes --latest
