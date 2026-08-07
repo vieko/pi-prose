@@ -102,7 +102,9 @@ keep `/style` free for task-shaped modes like `explanatory` or `ste`.
 
 Related: [`pi-output-styles`](https://www.npmjs.com/package/pi-output-styles)
 is another take on named styles for Pi/OMP. pi-prose differs in the always-on
-contract layer and the Claude Code-parity style set.
+contract layer and the Claude Code-parity style set. The style concept and
+the built-in set come from [Claude Code's output
+styles](https://code.claude.com/docs/en/output-styles).
 
 ## License
 
