@@ -1,7 +1,7 @@
 # pi-prose
 
-Output styles for [Pi](https://pi.dev), plus an always-on prose contract that
-keeps every model writing the same way.
+Make every model write the way you want, with consistent prose rules and
+styles you can switch instantly without restarting [Pi](https://pi.dev).
 
 Two layers:
 

@@ -1,7 +1,7 @@
 {
   "name": "pi-prose",
-  "version": "0.1.0",
-  "description": "Output styles for Pi with an always-on prose contract. Claude Code's styles (default, proactive, explanatory, learning), matter-of-fact, and ASD-STE100 -- switchable live, mid-session, regardless of model.",
+  "version": "0.1.1",
+  "description": "Make every model write the way you want, with consistent prose rules and styles you can switch instantly without restarting Pi.",
   "keywords": [
     "pi-package",
     "pi-extension",
@@ -25,7 +25,9 @@
     "check": "tsc -p tsconfig.json"
   },
   "pi": {
-    "extensions": ["./extensions/pi-prose.ts"]
+    "extensions": [
+      "./extensions/pi-prose.ts"
+    ]
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": ">=0.1.0"
