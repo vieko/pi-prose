@@ -1,0 +1,37 @@
+{
+  "name": "pi-prose",
+  "version": "0.1.0",
+  "description": "Output styles for Pi with an always-on prose contract. Claude Code's styles (default, proactive, explanatory, learning), matter-of-fact, and ASD-STE100 -- switchable live, mid-session, regardless of model.",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "output-style",
+    "prose",
+    "system-prompt"
+  ],
+  "license": "MIT",
+  "author": "Vieko Franetovic",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vieko/pi-prose.git"
+  },
+  "type": "module",
+  "files": [
+    "extensions",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "tsc -p tsconfig.json"
+  },
+  "pi": {
+    "extensions": ["./extensions/pi-prose.ts"]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.1.0"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typescript": "^5.7.0"
+  }
+}
