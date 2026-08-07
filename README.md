@@ -7,7 +7,7 @@ Two layers:
 
 1. **Named output styles** -- switchable live, mid-session, with `/style`.
    Includes Claude Code's built-in styles, a `matter-of-fact` style mined from
-   real usage, and ASD-STE100 Simplified Technical English.
+   my own day-to-day usage, and ASD-STE100 Simplified Technical English.
 2. **Prose contract** -- an optional `contract.md` appended to the system
    prompt on *every* turn, regardless of the selected style. Cycle from Claude
    to GPT to GLM and the register stays put.
@@ -52,8 +52,9 @@ default > `default`.
 | `ste` | [ASD-STE100](https://asd-ste100.org) Simplified Technical English: active voice, short sentences, one instruction per sentence, one word per meaning |
 
 `default`, `proactive`, `explanatory`, and `learning` mirror Claude Code's
-built-in output styles. `matter-of-fact` was distilled from style feedback
-across ~10k real coding-agent prompts.
+built-in output styles. `matter-of-fact` was distilled from ~10k of my own
+coding-agent prompts: the style corrections I kept repeating across models,
+collected over months of daily work, turned into a standing instruction set.
 
 ## Custom styles
 
