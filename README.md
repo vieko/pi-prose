@@ -101,11 +101,13 @@ keep `/style` free for task-shaped modes like `explanatory` or `ste`.
 | Custom styles | Markdown + frontmatter | Markdown + frontmatter |
 | Saved defaults | `outputStyle` in settings | `--save` (user) / `--project` |
 
-Related: [`pi-output-styles`](https://www.npmjs.com/package/pi-output-styles)
-is another take on named styles for Pi/OMP. pi-prose differs in the always-on
-contract layer and the Claude Code-parity style set. The style concept and
-the built-in set come from [Claude Code's output
-styles](https://code.claude.com/docs/en/output-styles).
+## Related
+
+- [Claude Code's output styles](https://code.claude.com/docs/en/output-styles)
+  -- the origin of the style concept and of the built-in set pi-prose mirrors.
+- [`pi-output-styles`](https://www.npmjs.com/package/pi-output-styles) --
+  another take on named styles for Pi/OMP, with its own style set. pi-prose
+  differs in the always-on contract layer and the Claude Code-parity styles.
 
 ## License
 
