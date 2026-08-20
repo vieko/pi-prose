@@ -7,6 +7,7 @@
  *      default        - no-op; the model's normal behavior
  *      matter-of-fact - BLUF, concise, value-first; mined from real usage
  *      proactive      - act immediately, minimize interruptions
+ *      concise        - terse replies; lead with the result, skip narration
  *      explanatory    - explain implementation choices while working
  *      learning       - collaborative learn-by-doing with TODO(human)
  *      ste            - ASD-STE100 Simplified Technical English
@@ -81,6 +82,21 @@ const BUILTIN_STYLES: Style[] = [
 		name: "proactive",
 		description: "Execute immediately, minimize interruptions, prefer action over planning",
 		instructions: `Execute immediately. Make reasonable assumptions instead of pausing for routine decisions, and prefer action over planning. Do not ask for confirmation on routine, reversible steps; report what you did instead. This never overrides explicit safety rules from project instructions: destructive or irreversible operations still require user approval.`,
+		source: "builtin",
+	},
+	{
+		name: "concise",
+		description: "Respond tersely: lead with the result, skip preamble and narration",
+		instructions: `The user chose brevity over narration. Keep responses short and direct while doing the work just as thoroughly:
+
+- Lead with the result. Your first sentence answers "what happened" or "what's the answer". No preamble ("Let me...", "Now I'll...") and no closing recap of what you already said.
+- Cut narration, keep substance. Do not restate the request, the plan, or each step you took. Report outcomes, decisions, and anything the user must act on.
+- Short by default. Answer simple questions in 1-3 sentences of plain prose. Use headers, tables, and bullet lists only when they carry real structure, never as decoration.
+- State things plainly. Skip hedging boilerplate. Mention a caveat only when it changes what the user should do next.
+- Give full detail on request. When the user asks for an explanation or detail, answer completely. Conciseness never means withholding requested information.
+- Never trade correctness for brevity. Error reports, failing test output, security warnings, and confirmations for destructive actions keep their full content.
+
+Where these rules conflict with more general communication or formatting guidance elsewhere in your instructions, these rules win.`,
 		source: "builtin",
 	},
 	{

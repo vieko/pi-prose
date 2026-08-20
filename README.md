@@ -47,12 +47,13 @@ default > `default`.
 | `default` | No-op; the model's normal behavior |
 | `matter-of-fact` | BLUF ledes, length matched to the question, sentences over bullet-splatter, `--` never em dash, value before mechanism, caveats stated once, no sycophancy or closing recaps |
 | `proactive` | Executes immediately, minimizes interruptions, prefers action over planning. Never overrides explicit safety rules from project instructions |
+| `concise` | Terse responses: leads with the result, cuts preamble and narration, 1-3 sentences for simple questions, never trades correctness for brevity |
 | `explanatory` | Adds short "Insight:" notes explaining implementation choices and codebase patterns |
 | `learning` | Collaborative learn-by-doing; asks you to write small, strategic pieces of code via `TODO(human)` markers |
 | `ste` | [ASD-STE100](https://asd-ste100.org) Simplified Technical English: active voice, short sentences, one instruction per sentence, one word per meaning |
 
-`default`, `proactive`, `explanatory`, and `learning` mirror Claude Code's
-built-in output styles. `matter-of-fact` was distilled from ~10k of my own
+`default`, `proactive`, `concise`, `explanatory`, and `learning` mirror
+Claude Code's built-in output styles. `matter-of-fact` was distilled from ~10k of my own
 coding-agent prompts: the style corrections I kept repeating across models,
 collected over months of daily work, turned into a standing instruction set.
 
