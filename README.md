@@ -1,5 +1,7 @@
 # pi-prose
 
+<p align="center"><img src="demons-hero.png" alt="pi-prose" width="100%" /></p>
+
 Make every model write the way you want, with consistent prose rules and
 styles you can switch instantly without restarting [Pi](https://pi.dev).
 
@@ -109,6 +111,10 @@ keep `/style` free for task-shaped modes like `explanatory` or `ste`.
 - [`pi-output-styles`](https://www.npmjs.com/package/pi-output-styles) --
   another take on named styles for Pi/OMP, with its own style set. pi-prose
   differs in the always-on contract layer and the Claude Code-parity styles.
+
+## Credits
+
+Illustration by [Jon Romero Ruiz](https://x.com/jonroru).
 
 ## License
 
