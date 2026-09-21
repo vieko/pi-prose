@@ -324,12 +324,30 @@ export default function piProse(pi: ExtensionAPI) {
 	});
 
 	// Append contract + active style every turn, whatever the model.
+	//
+	// Pi >= 0.86 exposes the prompt as named sections: we own `prose_contract`
+	// and `output_style`, and Pi diffs sections against what the model already
+	// has, so a mid-session /style switch becomes one small system patch on
+	// models that accept mid-conversation system messages instead of a full
+	// prefix rewrite (a cache miss). Older Pi lacks `systemPromptOptions`; fall
+	// back to replacing the whole prompt.
 	pi.on("before_agent_start", async (event) => {
-		const parts = [event.systemPrompt];
-		if (contract) parts.push(`## Prose Contract (always on)\n\n${contract}`);
-		if (activeStyle.instructions) {
-			parts.push(`## Output Style: ${activeStyle.name}\n\n${activeStyle.instructions}`);
+		const contractText = contract ? `## Prose Contract (always on)\n\n${contract}` : "";
+		const styleText = activeStyle.instructions
+			? `## Output Style: ${activeStyle.name}\n\n${activeStyle.instructions}`
+			: "";
+
+		const sections = (event as { systemPromptOptions?: { sections?: Record<string, string> } })
+			.systemPromptOptions?.sections;
+		if (sections) {
+			if (contractText) sections.prose_contract = contractText;
+			else delete sections.prose_contract;
+			if (styleText) sections.output_style = styleText;
+			else delete sections.output_style;
+			return undefined;
 		}
+
+		const parts = [event.systemPrompt, contractText, styleText].filter(Boolean);
 		if (parts.length === 1) return undefined;
 		return { systemPrompt: parts.join("\n\n") };
 	});

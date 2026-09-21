@@ -16,7 +16,11 @@ Two layers:
 
 Unlike Claude Code's output styles (which require `/clear` or a new session),
 style changes here apply on the next prompt: the system prompt is rebuilt every
-turn via `before_agent_start`.
+turn via `before_agent_start`. On Pi 0.86+ the contract and style live in
+their own prompt sections (`prose_contract`, `output_style`), so a switch is
+sent as a small system patch and the cached prefix survives on models that
+accept mid-conversation system messages; older Pi gets the whole-prompt
+rebuild.
 
 ## Install
 
