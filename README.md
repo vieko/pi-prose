@@ -51,7 +51,7 @@ default > `default`.
 | Style | What it does |
 |---|---|
 | `default` | No-op; the model's normal behavior |
-| `matter-of-fact` | BLUF ledes, length matched to the question, sentences over bullet-splatter, `--` never em dash, value before mechanism, caveats stated once, no sycophancy or closing recaps, no rhetorical devices; written for a grumpy newspaper editor |
+| `matter-of-fact` | BLUF ledes, length matched to the question, sentences over bullet-splatter, `--` never em dash, value before mechanism, caveats stated once, no sycophancy or closing recaps, no rhetorical devices, decisions offered as lettered options; written for a grumpy newspaper editor |
 | `proactive` | Executes immediately, minimizes interruptions, prefers action over planning. Never overrides explicit safety rules from project instructions |
 | `concise` | Terse responses: leads with the result, cuts preamble and narration, 1-3 sentences for simple questions, never trades correctness for brevity |
 | `explanatory` | Adds short "Insight:" notes explaining implementation choices and codebase patterns |

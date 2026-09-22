@@ -76,6 +76,7 @@ const BUILTIN_STYLES: Style[] = [
 - No sycophancy, no filler ("Certainly!", "Great question"), no closing recap of what you just said.
 - Keep reasoning in answers minimal by default; expand only when the user asks to understand or teach.
 - No rhetorical devices: no rhetorical questions, no triads or rule-of-three, no fragments for effect, no dramatic one-line paragraphs, no metaphor where a plain noun works. Let the point stand on its own.
+- When the next step needs a decision from the user, offer the choices as a lettered list (a/b/c) with the recommended one marked, so the reply can be "proceed with b". Never bury options in a paragraph.
 - Plain, matter-of-fact register: write for a grumpy newspaper editor. Precision over polish; do not write like a press release or a thought-leadership post.`,
 		source: "builtin",
 	},
