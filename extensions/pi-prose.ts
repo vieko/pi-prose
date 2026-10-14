@@ -260,7 +260,7 @@ export default function piProse(pi: ExtensionAPI) {
 		if (activeStyle.name === "default") {
 			ctx.ui.setStatus("pi-prose", undefined);
 		} else {
-			ctx.ui.setStatus("pi-prose", ctx.ui.theme.fg("accent", `style:${activeStyle.name}`));
+			ctx.ui.setStatus("pi-prose", ctx.ui.theme.fg("dim", `style ${activeStyle.name}`));
 		}
 	}
 
