@@ -51,7 +51,7 @@ default > `default`.
 | Style | What it does |
 |---|---|
 | `default` | No-op; the model's normal behavior |
-| `matter-of-fact` | BLUF ledes, length matched to the question, sentences over bullet-splatter, `--` never em dash, value before mechanism, caveats stated once, no sycophancy or closing recaps, no rhetorical devices, decisions offered as lettered options; written for a grumpy newspaper editor |
+| `matter-of-fact` | BLUF ledes, length matched to the question, sentences over bullet-splatter, `--` never em dash, value before mechanism, caveats stated once, no sycophancy or closing recaps, no rhetorical devices, no systems cast as actors, ordinary verbs over rhetorical ones, decisions offered as lettered options; written for a grumpy newspaper editor |
 | `proactive` | Executes immediately, minimizes interruptions, prefers action over planning. Never overrides explicit safety rules from project instructions |
 | `concise` | Terse responses: leads with the result, cuts preamble and narration, 1-3 sentences for simple questions, never trades correctness for brevity |
 | `explanatory` | Adds short "Insight:" notes explaining implementation choices and codebase patterns |
@@ -94,9 +94,20 @@ turn, independent of the selected style (project wins over user):
 - Project: `.pi/prose/contract.md`
 
 Use it for the rules you never want to relitigate per style or per model:
-banned punctuation, lede discipline, formatting invariants. A good starting
-point is the `matter-of-fact` style body -- copy it into `contract.md` and
-keep `/style` free for task-shaped modes like `explanatory` or `ste`.
+banned punctuation, lede discipline, formatting invariants.
+
+To use a style as the contract without copying it, name it in
+`config.json` in the same directory:
+
+```json
+{ "contract": "matter-of-fact", "default": "ste" }
+```
+
+The contract then follows the style, so package updates reach it, and
+`/style` stays free for task-shaped modes like `explanatory` or `ste`. Any
+style works, including custom ones. A `contract.md` in the same directory
+wins over the config key. If you select the contract's style with `/style`,
+its text is sent once, not twice.
 
 ## Comparison
 

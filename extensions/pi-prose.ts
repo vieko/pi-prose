@@ -20,7 +20,9 @@
  * 2. Always-on prose contract: if `contract.md` exists in either directory
  *    (project wins), its body is appended to the system prompt on every
  *    turn regardless of the selected style. Use it to normalize prose
- *    across models without giving up style switching.
+ *    across models without giving up style switching. Instead of the file,
+ *    `"contract": "<style>"` in that directory's `config.json` uses a
+ *    style's body as the contract; `contract.md` wins in the same directory.
  *
  * Usage:
  *   /style                     - picker (also shows the active style)
@@ -77,7 +79,9 @@ const BUILTIN_STYLES: Style[] = [
 - Keep reasoning in answers minimal by default; expand only when the user asks to understand or teach.
 - No rhetorical devices: no rhetorical questions, no triads or rule-of-three, no fragments for effect, no dramatic one-line paragraphs, no metaphor where a plain noun works. Let the point stand on its own.
 - When the next step needs a decision from the user, offer the choices as a lettered list (a/b/c) with the recommended one marked, so the reply can be "proceed with b". Never bury options in a paragraph.
-- Plain, matter-of-fact register: write for a grumpy newspaper editor. Precision over polish; do not write like a press release or a thought-leadership post.`,
+- Plain, matter-of-fact register: write for a grumpy newspaper editor. Precision over polish; do not write like a press release or a thought-leadership post.
+- Do not make systems, files, or abstractions into actors for a stronger sentence. "The pin is in settings.json", not "settings.json holds the pin". Make a person or a running process the subject only when it really does the action.
+- Prefer ordinary verbs ("has", "uses", "gets", "can") to rhetorical ones ("holds", "owns", "carries", "drives", "unlocks"). Keep a precise or technical verb when it marks a real distinction.`,
 		source: "builtin",
 	},
 	{
@@ -118,7 +122,7 @@ Where these rules conflict with more general communication or formatting guidanc
 		description: "ASD-STE100 Simplified Technical English",
 		instructions: `Write all prose to the user in ASD-STE100 Simplified Technical English:
 
-- Use the active voice. Make the doer of the action the subject of the sentence.
+- Use the active voice when a person or process does the action. Do not make inanimate things the subject to avoid the passive.
 - Keep sentences short: maximum 20 words in instructions, 25 words in descriptions.
 - Give one instruction per sentence. Write one topic per paragraph, maximum 6 sentences.
 - Use the simple present tense unless a different tense is necessary.
@@ -198,7 +202,9 @@ function loadContract(dir: string): string | undefined {
 	}
 }
 
-function readConfig(dir: string): { default?: string } {
+type Config = { default?: string; contract?: string };
+
+function readConfig(dir: string): Config {
 	const path = join(dir, CONFIG_FILENAME);
 	if (!existsSync(path)) return {};
 	try {
@@ -209,7 +215,11 @@ function readConfig(dir: string): { default?: string } {
 	}
 }
 
-function writeConfig(dir: string, config: { default?: string }) {
+/** Set or clear the saved default, keeping other keys such as `contract`. */
+function writeDefault(dir: string, name: string | undefined) {
+	const config: Config = { ...readConfig(dir) };
+	if (name) config.default = name;
+	else delete config.default;
 	mkdirSync(dirname(join(dir, CONFIG_FILENAME)), { recursive: true });
 	writeFileSync(join(dir, CONFIG_FILENAME), `${JSON.stringify(config, null, 2)}\n`, "utf-8");
 }
@@ -217,6 +227,8 @@ function writeConfig(dir: string, config: { default?: string }) {
 export default function piProse(pi: ExtensionAPI) {
 	let styles: Style[] = [...BUILTIN_STYLES];
 	let contract: string | undefined;
+	/** Name of the style used as the contract, if the contract came from config. */
+	let contractStyle: string | undefined;
 	let activeStyle: Style = BUILTIN_STYLES[0];
 	/** True once the user picked a style in this session (beats saved defaults). */
 	let sessionChoice = false;
@@ -235,7 +247,6 @@ export default function piProse(pi: ExtensionAPI) {
 	/** Later sources win by name: builtin < user < project. */
 	function loadAll(ctx: ExtensionContext) {
 		const trusted = ctx.isProjectTrusted();
-		contract = (trusted ? loadContract(projectDir(ctx.cwd)) : undefined) ?? loadContract(userDir());
 		const merged = new Map<string, Style>();
 		for (const s of BUILTIN_STYLES) merged.set(s.name, s);
 		for (const s of loadStylesFromDir(userDir(), "user")) merged.set(s.name, s);
@@ -243,6 +254,26 @@ export default function piProse(pi: ExtensionAPI) {
 			for (const s of loadStylesFromDir(projectDir(ctx.cwd), "project")) merged.set(s.name, s);
 		}
 		styles = [...merged.values()];
+
+		// Per directory, contract.md beats config "contract"; project beats user.
+		contract = undefined;
+		contractStyle = undefined;
+		for (const dir of trusted ? [projectDir(ctx.cwd), userDir()] : [userDir()]) {
+			const fromFile = loadContract(dir);
+			if (fromFile) {
+				contract = fromFile;
+				return;
+			}
+			const name = readConfig(dir).contract;
+			if (!name) continue;
+			const style = findStyle(name);
+			if (style?.instructions) {
+				contract = style.instructions;
+				contractStyle = style.name;
+				return;
+			}
+			ctx.ui.notify(`pi-prose: contract style "${name}" not found`, "warning");
+		}
 	}
 
 	function resolveDefault(ctx: ExtensionContext): Style {
@@ -297,10 +328,10 @@ export default function piProse(pi: ExtensionAPI) {
 				}
 				activate(style, ctx, true);
 				const cleared = style.name === "default";
-				if (save) writeConfig(userDir(), cleared ? {} : { default: style.name });
+				if (save) writeDefault(userDir(), cleared ? undefined : style.name);
 				if (project) {
 					if (ctx.isProjectTrusted()) {
-						writeConfig(projectDir(ctx.cwd), cleared ? {} : { default: style.name });
+						writeDefault(projectDir(ctx.cwd), cleared ? undefined : style.name);
 					} else {
 						ctx.ui.notify("Project is not trusted; did not write project default", "warning");
 					}
@@ -334,7 +365,9 @@ export default function piProse(pi: ExtensionAPI) {
 	// back to replacing the whole prompt.
 	pi.on("before_agent_start", async (event) => {
 		const contractText = contract ? `## Prose Contract (always on)\n\n${contract}` : "";
-		const styleText = activeStyle.instructions
+		// Selecting the contract's own style would send the same text twice.
+		const styleText =
+			activeStyle.instructions && activeStyle.name !== contractStyle
 			? `## Output Style: ${activeStyle.name}\n\n${activeStyle.instructions}`
 			: "";
 
