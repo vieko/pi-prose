@@ -94,9 +94,20 @@ turn, independent of the selected style (project wins over user):
 - Project: `.pi/prose/contract.md`
 
 Use it for the rules you never want to relitigate per style or per model:
-banned punctuation, lede discipline, formatting invariants. A good starting
-point is the `matter-of-fact` style body -- copy it into `contract.md` and
-keep `/style` free for task-shaped modes like `explanatory` or `ste`.
+banned punctuation, lede discipline, formatting invariants.
+
+To use a style as the contract without copying it, name it in
+`config.json` in the same directory:
+
+```json
+{ "contract": "matter-of-fact", "default": "ste" }
+```
+
+The contract then follows the style, so package updates reach it, and
+`/style` stays free for task-shaped modes like `explanatory` or `ste`. Any
+style works, including custom ones. A `contract.md` in the same directory
+wins over the config key. If you select the contract's style with `/style`,
+its text is sent once, not twice.
 
 ## Comparison
 
